@@ -1,4 +1,3 @@
-use itertools::zip;
 fn main() {
     // Pg. 26
     // println!(
@@ -23,6 +22,24 @@ fn main() {
     //     "This is the fourth example output: {:?}",
     //     looping_through_neurons()
     // )
+
+    //Pg. 38
+    // println!(
+    //     "This is the dot product result: {:?}",
+    //     dot_product([1.0, 2.0, 3.0].to_vec(), [2.0, 3.0, 4.0].to_vec())
+    // )
+
+    //Pg. 40
+    // println!(
+    //     "This is the neuron with the dot product function: {:?}",
+    //     neuron_with_dot_product()
+    // )
+
+    //Pg.42
+    // println!(
+    //     "This is a layer of neurons with the dot product function: {:?}",
+    //     multiple_neurons_with_dot_product()
+    // )
 }
 
 // ---------------------------------------------
@@ -34,7 +51,7 @@ fn main() {
 
 //     let output = inputs[0] * weights[0] + inputs[1] * weights[1] + inputs[2] * weights[2] + bias;
 
-//     return output;
+//     output
 // }
 
 // ---------------------------------------------
@@ -50,7 +67,7 @@ fn main() {
 //         + inputs[3] * weights[3]
 //         + bias;
 
-//     return output;
+//     output
 // }
 
 // ---------------------------------------------
@@ -83,7 +100,7 @@ fn main() {
 //             + bias3),
 //     ];
 
-//     return outputs;
+//     outputs
 // }
 
 // ---------------------------------------------
@@ -102,10 +119,10 @@ fn main() {
 
 //     let mut layer_outputs: Vec<f32> = Vec::new();
 
-//     for (neuron_weights, neuron_bias) in zip(weights, biases) {
+//     for (neuron_weights, neuron_bias) in std::iter::zip(weights, biases) {
 //         let mut neuron_output: f32 = 0.0;
 
-//         for (n_input, weight) in zip(&inputs, neuron_weights) {
+//         for (n_input, weight) in std::iter::zip(&inputs, neuron_weights) {
 //             neuron_output += n_input * weight;
 //         }
 //         neuron_output += neuron_bias;
@@ -113,5 +130,57 @@ fn main() {
 //         layer_outputs.push(neuron_output)
 //     }
 
-//     return layer_outputs;
+//     layer_outputs
+// }
+
+// Pg. 38
+//TODO: Handling 2D vector and return vector of dot products like on pg.42
+// fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
+//     let mut sum: f32 = 0.0;
+//     for (i, j) in std::iter::zip(v1, v2) {
+//         sum += i * j;
+//     }
+
+//     sum
+// }
+
+// Pg. 40
+// fn neuron_with_dot_product() -> f32 {
+//     let inputs = vec![1.0, 2.0, 3.0, 2.5];
+
+//     let weights = vec![0.2, 0.8, -0.5, 1.0];
+//     let bias = 2.0;
+
+//     let outputs = dot_product(inputs, weights) + bias;
+//     outputs
+// }
+
+// Pg. 42
+// fn multiple_neurons_with_dot_product() -> Vec<f32> {
+//     let inputs = vec![1.0, 2.0, 3.0, 2.5];
+
+//     let weights = vec![
+//         [0.2, 0.8, -0.5, 1.0],
+//         [0.5, -0.91, 0.26, -0.5],
+//         [-0.26, -0.27, 0.17, 0.87],
+//     ];
+
+//     let biases = vec![2.0, 3.0, 0.5];
+
+//     let mut layer_outputs: Vec<f32> = Vec::new();
+
+//     for (neuron_weights, bias) in std::iter::zip(weights, biases) {
+//         layer_outputs.push(dot_product(inputs.to_vec(), neuron_weights.to_vec()) + bias)
+//     }
+
+//     layer_outputs
+// }
+
+// fn vector_addition(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
+//     let mut sum: f32 = 0.0;
+//     for (i, j) in std::iter::zip(v1, v2) {
+//         sum += i + j;
+//     }
+
+//     sum
 // }
