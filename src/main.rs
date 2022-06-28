@@ -40,25 +40,27 @@ fn main() {
     //     "This is a layer of neurons with the dot product function: {:?}",
     //     multiple_neurons_with_dot_product()
     // )
-    let matrix1 = vec![
-        [0.49, 0.97, 0.53, 0.05].to_vec(),
-        [0.33, 0.65, 0.62, 0.51].to_vec(),
-        [1.00, 0.38, 0.61, 0.45].to_vec(),
-        [0.74, 0.27, 0.64, 0.17].to_vec(),
-        [0.36, 0.17, 0.96, 0.12].to_vec(),
-    ];
 
-    let matrix2 = vec![
-        [0.79, 0.32, 0.68, 0.90, 0.77].to_vec(),
-        [0.18, 0.39, 0.12, 0.93, 0.09].to_vec(),
-        [0.87, 0.42, 0.60, 0.71, 0.12].to_vec(),
-        [0.45, 0.55, 0.40, 0.78, 0.81].to_vec(),
-    ];
+    //Pg.47
+    // let matrix1 = vec![
+    //     [0.49, 0.97, 0.53, 0.05].to_vec(),
+    //     [0.33, 0.65, 0.62, 0.51].to_vec(),
+    //     [1.00, 0.38, 0.61, 0.45].to_vec(),
+    //     [0.74, 0.27, 0.64, 0.17].to_vec(),
+    //     [0.36, 0.17, 0.96, 0.12].to_vec(),
+    // ];
 
-    println!(
-        "This is the result of the matrix multiplcation: {:?}",
-        matrix_product(matrix1, matrix2)
-    )
+    // let matrix2 = vec![
+    //     [0.79, 0.32, 0.68, 0.90, 0.77].to_vec(),
+    //     [0.18, 0.39, 0.12, 0.93, 0.09].to_vec(),
+    //     [0.87, 0.42, 0.60, 0.71, 0.12].to_vec(),
+    //     [0.45, 0.55, 0.40, 0.78, 0.81].to_vec(),
+    // ];
+
+    // println!(
+    //     "This is the result of the matrix multiplcation: {:?}",
+    //     matrix_product(matrix1, matrix2)
+    // )
 }
 
 // ---------------------------------------------
@@ -153,7 +155,8 @@ fn main() {
 // }
 
 // Pg. 38
-//TODO: Handling 2D vector and return vector of dot products like on pg.42
+// TODO: Handling 2D vector and return vector of dot products like on pg.42
+// TODO: Make a fancy one-liner
 // fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
 //     let mut sum: f32 = 0.0;
 //     for (i, j) in std::iter::zip(v1, v2) {
@@ -195,18 +198,20 @@ fn main() {
 //     layer_outputs
 // }
 
-fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    let mut matrix: Vec<Vec<f32>> = Vec::new();
-    for i in 0..m1.len() {
-        let mut temp: Vec<f32> = Vec::new();
-        for j in 0..m2[0].len() {
-            let mut sum = 0.0;
-            for k in 0..m1[0].len() {
-                sum += m1[i][k] * m2[k][j];
-            }
-            temp.push(sum)
-        }
-        matrix.push(temp)
-    }
-    matrix
-}
+// Pg. 47
+// TODO: Make a fancy one-liner
+// fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+//     for i in 0..m1.len() {
+//         let mut temp: Vec<f32> = Vec::new();
+//         for j in 0..m2[0].len() {
+//             let mut sum = 0.0;
+//             for k in 0..m1[0].len() {
+//                 sum += m1[i][k] * m2[k][j];
+//             }
+//             temp.push(sum)
+//         }
+//         matrix.push(temp)
+//     }
+//     matrix
+// }
