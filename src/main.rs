@@ -235,7 +235,7 @@ fn main() {
 // }
 
 // Pg. 50
-// fn matrix_transpose(m1: Vec<Vec<f32>>) {
+// fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
 //     let mut matrix: Vec<Vec<f32>> = Vec::new();
 //     for i in 0..m1[0].len() {
 //         let mut temp: Vec<f32> = Vec::new();
@@ -244,5 +244,5 @@ fn main() {
 //         }
 //         matrix.push(temp);
 //     }
-//     println!("This is the transposed matrix: {:?}", matrix);
+//     matrix
 // }
