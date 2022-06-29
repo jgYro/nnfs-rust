@@ -61,6 +61,24 @@ fn main() {
     //     "This is the result of the matrix multiplcation: {:?}",
     //     matrix_product(matrix1, matrix2)
     // )
+
+    //Pg.50
+    // let matrix1 = vec![
+    //     [0.0, 0.1, 0.2, 0.3, 0.4].to_vec(),
+    //     [0.5, 0.6, 0.7, 0.8, 0.9].to_vec(),
+    //     [1.0, 1.1, 1.2, 1.3, 1.4].to_vec(),
+    //     [1.5, 1.6, 1.7, 1.8, 1.9].to_vec(),
+    // ];
+
+    // let matrix2 = vec![
+    //     [0.0, 0.5, 1.0, 1.5].to_vec(),
+    //     [0.1, 0.6, 1.1, 1.6].to_vec(),
+    //     [0.2, 0.7, 1.2, 1.7].to_vec(),
+    //     [0.3, 0.8, 1.3, 1.8].to_vec(),
+    //     [0.4, 0.9, 1.4, 1.9].to_vec(),
+    // ];
+
+    // matrix_transpose(matrix2);
 }
 
 // ---------------------------------------------
@@ -214,4 +232,17 @@ fn main() {
 //         matrix.push(temp)
 //     }
 //     matrix
+// }
+
+// Pg. 50
+// fn matrix_transpose(m1: Vec<Vec<f32>>) {
+//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+//     for i in 0..m1[0].len() {
+//         let mut temp: Vec<f32> = Vec::new();
+//         for j in &m1 {
+//             temp.push(j[i])
+//         }
+//         matrix.push(temp);
+//     }
+//     println!("This is the transposed matrix: {:?}", matrix);
 // }
