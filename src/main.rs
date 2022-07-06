@@ -81,10 +81,16 @@ fn main() {
     // matrix_transpose(matrix2);
 
     //Pg.58
-    println!(
-        "This is a the layer outputs of a neuron function using matrix products and vector addition: {:?}",
-        neuron_with_functions()
-            )
+    // println!(
+    //     "This is a the layer outputs of a neuron function using matrix products and vector addition: {:?}",
+    //     neuron_with_functions()
+    //         )
+
+    // Pg.61
+    // println!(
+    //     "This is the output of the function with the hidden layers: {:?}",
+    //     neuron_with_hidden_layers()
+    // )
 }
 
 // ---------------------------------------------
@@ -224,64 +230,122 @@ fn main() {
 
 // Pg. 47
 // TODO: Make a fancy one-liner
-fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    let mut matrix: Vec<Vec<f32>> = Vec::new();
-    for i in 0..m1.len() {
-        let mut temp: Vec<f32> = Vec::new();
-        for j in 0..m2[0].len() {
-            let mut sum = 0.0;
-            for k in 0..m1[0].len() {
-                sum += m1[i][k] * m2[k][j];
-            }
-            temp.push(sum)
-        }
-        matrix.push(temp)
+// fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+//     for i in 0..m1.len() {
+//         let mut temp: Vec<f32> = Vec::new();
+//         for j in 0..m2[0].len() {
+//             let mut sum = 0.0;
+//             for k in 0..m1[0].len() {
+//                 sum += m1[i][k] * m2[k][j];
+//             }
+//             temp.push(sum)
+//         }
+//         matrix.push(temp)
+//     }
+//     matrix
+// }
+
+// // Pg. 50
+// fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+//     for i in 0..m1[0].len() {
+//         let mut temp: Vec<f32> = Vec::new();
+//         for j in &m1 {
+//             temp.push(j[i])
+//         }
+//         matrix.push(temp);
+//     }
+//     matrix
+// }
+
+// // Pg. 57
+// fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
+//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+
+//     for i in 0..m1.len() {
+//         let mut temp: Vec<f32> = Vec::new();
+//         for j in 0..v1.len() {
+//             temp.push(m1[i][j] + v1[j])
+//         }
+//         matrix.push(temp)
+//     }
+//     matrix
+// }
+
+// Pg. 58
+// fn neuron_with_functions() -> Vec<Vec<f32>> {
+//     let inputs = vec![
+//         [1.0, 2.0, 3.0, 2.5].to_vec(),
+//         [2.0, 5.0, -1.0, 2.0].to_vec(),
+//         [-1.5, 2.7, 3.3, -0.8].to_vec(),
+//     ];
+//     let weights = vec![
+//         [0.2, 0.8, -0.5, 1.0].to_vec(),
+//         [0.5, -0.91, 0.26, -0.5].to_vec(),
+//         [-0.26, -0.27, 0.17, 0.87].to_vec(),
+//     ];
+
+//     let biases = vec![2.0, 3.0, 0.5];
+
+//     let layer_outputs = vector_addition(matrix_product(inputs, matrix_transpose(weights)), biases);
+
+//     layer_outputs
+// }
+//
+
+//Pg. 61
+// fn neuron_with_hidden_layers() -> Vec<Vec<f32>> {
+//     let inputs = vec![
+//         [1.0, 2.0, 3.0, 2.5].to_vec(),
+//         [2.0, 5.0, -1.0, 2.0].to_vec(),
+//         [-1.5, 2.7, 3.3, -0.8].to_vec(),
+//     ];
+//     let weights = vec![
+//         [0.2, 0.8, -0.5, 1.0].to_vec(),
+//         [0.5, -0.91, 0.26, -0.5].to_vec(),
+//         [-0.26, -0.27, 0.17, 0.87].to_vec(),
+//     ];
+
+//     let biases = vec![2.0, 3.0, 0.5];
+
+//     let weights2 = vec![
+//         [0.1, -0.14, 0.5].to_vec(),
+//         [-0.5, 0.12, -0.33].to_vec(),
+//         [-0.44, 0.73, -0.13].to_vec(),
+//     ];
+
+//     let biases2 = vec![-1.0, 2.0, -0.5];
+
+//     let layer_outputs1 = vector_addition(matrix_product(inputs, matrix_transpose(weights)), biases);
+//     let layer_outputs2 = vector_addition(
+//         matrix_product(layer_outputs1, matrix_transpose(weights2)),
+//         biases2,
+//     );
+
+//     layer_outputs2
+// }
+
+fn create_distribution(size: usize) -> Vec<f32> {
+    let mut rng = rand::thread_rng();
+
+    let v: Vec<f32> =
+        rand::distributions::Distribution::sample_iter(&rand::distributions::Standard, &mut rng)
+            .take(size)
+            .collect();
+
+    let mut distribution: Vec<f32> = Vec::new();
+
+    for number in v {
+        let rando: u8 = rand::Rng::gen(&mut rng);
+
+        let result = if let 0 = rando % 2 {
+            number
+        } else {
+            number * -1.0
+        };
+        distribution.push(result);
     }
-    matrix
-}
 
-// Pg. 50
-fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    let mut matrix: Vec<Vec<f32>> = Vec::new();
-    for i in 0..m1[0].len() {
-        let mut temp: Vec<f32> = Vec::new();
-        for j in &m1 {
-            temp.push(j[i])
-        }
-        matrix.push(temp);
-    }
-    matrix
-}
-
-// Pg. 57
-fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
-    let mut matrix: Vec<Vec<f32>> = Vec::new();
-
-    for i in 0..m1.len() {
-        let mut temp: Vec<f32> = Vec::new();
-        for j in 0..v1.len() {
-            temp.push(m1[i][j] + v1[j])
-        }
-        matrix.push(temp)
-    }
-    matrix
-}
-
-fn neuron_with_functions() -> Vec<Vec<f32>> {
-    let inputs = vec![
-        [1.0, 2.0, 3.0, 2.5].to_vec(),
-        [2.0, 5.0, -1.0, 2.0].to_vec(),
-        [-1.5, 2.7, 3.3, -0.8].to_vec(),
-    ];
-    let weights = vec![
-        [0.2, 0.8, -0.5, 1.0].to_vec(),
-        [0.5, -0.91, 0.26, -0.5].to_vec(),
-        [-0.26, -0.27, 0.17, 0.87].to_vec(),
-    ];
-
-    let biases = vec![2.0, 3.0, 0.5];
-
-    let layer_outputs = vector_addition(matrix_product(inputs, matrix_transpose(weights)), biases);
-
-    layer_outputs
+    return distribution;
 }
