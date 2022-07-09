@@ -91,6 +91,13 @@ fn main() {
     //     "This is the output of the function with the hidden layers: {:?}",
     //     neuron_with_hidden_layers()
     // )
+
+    let layer = DenseLayer::new(3, 3);
+
+    println!(
+        "This is the weights: {:?}, and this is the bias {:?}",
+        layer.weights, layer.biases
+    )
 }
 
 // ---------------------------------------------
@@ -326,6 +333,7 @@ fn main() {
 //     layer_outputs2
 // }
 
+// Pg. 67
 fn create_distribution(size: usize) -> Vec<f32> {
     let mut rng = rand::thread_rng();
 
@@ -347,5 +355,38 @@ fn create_distribution(size: usize) -> Vec<f32> {
         distribution.push(result);
     }
 
-    return distribution;
+    distribution
+}
+
+fn create_weights(inputs: usize, neurons: usize) -> Vec<Vec<f32>> {
+    let mut weights = Vec::new();
+    for _ in 0..inputs {
+        weights.push(create_distribution(neurons))
+    }
+
+    weights
+}
+
+fn create_biases(neurons: usize) -> Vec<f32> {
+    let mut biases = Vec::new();
+
+    for _ in 0..neurons {
+        biases.push(0.0);
+    }
+    biases
+}
+
+#[derive(Debug)]
+struct DenseLayer {
+    weights: Vec<Vec<f32>>,
+    biases: Vec<f32>,
+}
+
+impl DenseLayer {
+    fn new(inputs: usize, neurons: usize) -> Self {
+        return DenseLayer {
+            weights: create_weights(inputs, neurons),
+            biases: create_biases(neurons),
+        };
+    }
 }
