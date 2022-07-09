@@ -84,7 +84,7 @@ fn main() {
     // println!(
     //     "This is a the layer outputs of a neuron function using matrix products and vector addition: {:?}",
     //     neuron_with_functions()
-    //         )
+    //         );
 
     // Pg.61
     // println!(
@@ -92,13 +92,35 @@ fn main() {
     //     neuron_with_hidden_layers()
     // )
 
-    let layer = DenseLayer::new(3, 3);
+    // Pg.69
+    // let neuron_with_functions = DenseLayer {
+    //     weights: vec![
+    //         [0.2, 0.8, -0.5, 1.0].to_vec(),
+    //         [0.5, -0.91, 0.26, -0.5].to_vec(),
+    //         [-0.26, -0.27, 0.17, 0.87].to_vec(),
+    //     ],
+    //     biases: vec![2.0, 3.0, 0.5],
+    // };
 
-    println!(
-        "This is the weights: {:?}, and this is the bias {:?}",
-        layer.weights, layer.biases
-    )
-}
+    // println!(
+    //     "This is the output of the forward pass: {:#?}",
+    //     neuron_with_functions.forward(vec![
+    //         [1.0, 2.0, 3.0, 2.5].to_vec(),
+    //         [2.0, 5.0, -1.0, 2.0].to_vec(),
+    //         [-1.5, 2.7, 3.3, -0.8].to_vec(),
+    //     ])
+    // );
+
+    // let singe_weight = DenseLayer {
+    //     weights: vec![[0.2, 0.8, -0.5, 1.0].to_vec()],
+    //     biases: vec![2.0],
+    // };
+
+    // println!(
+    //     "This is the output of the forward pass: {:#?}",
+    //     singe_weight.forward(vec![[1.0, 2.0, 3.0, 2.5].to_vec()])
+    // )
+// }
 
 // ---------------------------------------------
 // Pg.26 Hard coding a neuron with 3 inputs and 3 weights
@@ -194,14 +216,14 @@ fn main() {
 // Pg. 38
 // TODO: Handling 2D vector and return vector of dot products like on pg.42
 // TODO: Make a fancy one-liner
-// fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
-//     let mut sum: f32 = 0.0;
-//     for (i, j) in std::iter::zip(v1, v2) {
-//         sum += i * j;
-//     }
+fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
+    let mut sum: f32 = 0.0;
+    for (i, j) in std::iter::zip(v1, v2) {
+        sum += i * j;
+    }
 
-//     sum
-// }
+    sum
+}
 
 // Pg. 40
 // fn neuron_with_dot_product() -> f32 {
@@ -237,48 +259,48 @@ fn main() {
 
 // Pg. 47
 // TODO: Make a fancy one-liner
-// fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-//     let mut matrix: Vec<Vec<f32>> = Vec::new();
-//     for i in 0..m1.len() {
-//         let mut temp: Vec<f32> = Vec::new();
-//         for j in 0..m2[0].len() {
-//             let mut sum = 0.0;
-//             for k in 0..m1[0].len() {
-//                 sum += m1[i][k] * m2[k][j];
-//             }
-//             temp.push(sum)
-//         }
-//         matrix.push(temp)
-//     }
-//     matrix
-// }
+fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+    let mut matrix: Vec<Vec<f32>> = Vec::new();
+    for i in 0..m1.len() {
+        let mut temp: Vec<f32> = Vec::new();
+        for j in 0..m2[0].len() {
+            let mut sum = 0.0;
+            for k in 0..m1[0].len() {
+                sum += m1[i][k] * m2[k][j];
+            }
+            temp.push(sum)
+        }
+        matrix.push(temp)
+    }
+    matrix
+}
 
 // // Pg. 50
-// fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-//     let mut matrix: Vec<Vec<f32>> = Vec::new();
-//     for i in 0..m1[0].len() {
-//         let mut temp: Vec<f32> = Vec::new();
-//         for j in &m1 {
-//             temp.push(j[i])
-//         }
-//         matrix.push(temp);
-//     }
-//     matrix
-// }
+fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+    let mut matrix: Vec<Vec<f32>> = Vec::new();
+    for i in 0..m1[0].len() {
+        let mut temp: Vec<f32> = Vec::new();
+        for j in &m1 {
+            temp.push(j[i])
+        }
+        matrix.push(temp);
+    }
+    matrix
+}
 
 // // Pg. 57
-// fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
-//     let mut matrix: Vec<Vec<f32>> = Vec::new();
+fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
+    let mut matrix: Vec<Vec<f32>> = Vec::new();
 
-//     for i in 0..m1.len() {
-//         let mut temp: Vec<f32> = Vec::new();
-//         for j in 0..v1.len() {
-//             temp.push(m1[i][j] + v1[j])
-//         }
-//         matrix.push(temp)
-//     }
-//     matrix
-// }
+    for i in 0..m1.len() {
+        let mut temp: Vec<f32> = Vec::new();
+        for j in 0..v1.len() {
+            temp.push(m1[i][j] + v1[j])
+        }
+        matrix.push(temp)
+    }
+    matrix
+}
 
 // Pg. 58
 // fn neuron_with_functions() -> Vec<Vec<f32>> {
@@ -299,7 +321,6 @@ fn main() {
 
 //     layer_outputs
 // }
-//
 
 //Pg. 61
 // fn neuron_with_hidden_layers() -> Vec<Vec<f32>> {
@@ -382,11 +403,22 @@ struct DenseLayer {
     biases: Vec<f32>,
 }
 
+//Pg. 69
+//This has produced the same output as two earlier examples
 impl DenseLayer {
     fn new(inputs: usize, neurons: usize) -> Self {
         return DenseLayer {
             weights: create_weights(inputs, neurons),
             biases: create_biases(neurons),
         };
+    }
+}
+
+impl DenseLayer {
+    fn forward(&self, inputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+        vector_addition(
+            matrix_product(inputs.to_vec(), matrix_transpose(self.weights.to_vec())),
+            self.biases.to_vec(),
+        )
     }
 }
