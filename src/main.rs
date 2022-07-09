@@ -2,6 +2,15 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use std::fs;
 fn main() {
+    #[derive(Serialize, Deserialize, Debug)]
+    struct NNFS {
+        data: Vec<Vec<f32>>,
+    }
+
+    let path = "./nnfs_data.json";
+    let data = fs::read_to_string(path).expect("Unable to read file");
+    let dataset: NNFS = serde_json::from_str(&data).unwrap();
+
     // Pg. 26
     // println!(
     //     "This is the first example output: {:?}",
@@ -124,6 +133,11 @@ fn main() {
     //     singe_weight.forward(vec![[1.0, 2.0, 3.0, 2.5].to_vec()])
     // )
     // }
+
+    //Pg.71
+    let pre_act = DenseLayer::new(2, 3);
+
+    println!("Here is the output: {:#?}", pre_act.forward(dataset.data));
 
     // ---------------------------------------------
     // Pg.26 Hard coding a neuron with 3 inputs and 3 weights
@@ -422,18 +436,9 @@ fn main() {
     impl DenseLayer {
         fn forward(&self, inputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
             vector_addition(
-                matrix_product(inputs.to_vec(), matrix_transpose(self.weights.to_vec())),
+                matrix_product(inputs.to_vec(), self.weights.to_vec()),
                 self.biases.to_vec(),
             )
         }
     }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    struct NNFS {
-        data: Vec<Vec<f32>>,
-    }
-
-    let path = "./nnfs_data.json";
-    let data = fs::read_to_string(path).expect("Unable to read file");
-    let _dataset: NNFS = serde_json::from_str(&data).unwrap();
 }
