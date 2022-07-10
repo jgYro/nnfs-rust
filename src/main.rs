@@ -1,15 +1,10 @@
-use serde::{Deserialize, Serialize};
-use serde_json;
-use std::fs;
+// use serde::{Deserialize, Serialize};
+// use serde_json;
+// use std::fs;
 fn main() {
-    #[derive(Serialize, Deserialize, Debug)]
-    struct NNFS {
-        data: Vec<Vec<f32>>,
-    }
+    let rel = ActivationReLu::new(vec![[0.1, -0.3, 1.1, -3.4].to_vec()]);
 
-    let path = "./nnfs_data.json";
-    let data = fs::read_to_string(path).expect("Unable to read file");
-    let dataset: NNFS = serde_json::from_str(&data).unwrap();
+    println!("This is the ReLu function: {:?}", rel);
 
     // Pg. 26
     // println!(
@@ -135,9 +130,18 @@ fn main() {
     // }
 
     //Pg.71
-    let pre_act = DenseLayer::new(2, 3);
+    // #[derive(Serialize, Deserialize, Debug)]
+    // struct NNFS {
+    //     data: Vec<Vec<f32>>,
+    // }
 
-    println!("Here is the output: {:#?}", pre_act.forward(dataset.data));
+    // let path = "./nnfs_data.json";
+    // let data = fs::read_to_string(path).expect("Unable to read file");
+    // let dataset: NNFS = serde_json::from_str(&data).unwrap();
+
+    // let pre_act = DenseLayer::new(2, 3);
+
+    // println!("Here is the output: {:#?}", pre_act.forward(dataset.data));
 
     // ---------------------------------------------
     // Pg.26 Hard coding a neuron with 3 inputs and 3 weights
@@ -439,6 +443,30 @@ fn main() {
                 matrix_product(inputs.to_vec(), self.weights.to_vec()),
                 self.biases.to_vec(),
             )
+        }
+    }
+
+    #[derive(Debug)]
+    struct ActivationReLu {
+        output: Vec<Vec<f32>>,
+    }
+
+    impl ActivationReLu {
+        fn new(inputs: Vec<Vec<f32>>) -> Self {
+            let mut activation: Vec<Vec<f32>> = Vec::new();
+
+            for vector in inputs {
+                let mut re_lu: Vec<f32> = Vec::new();
+                for float in vector {
+                    if float > 0.0 {
+                        re_lu.push(float)
+                    } else {
+                        re_lu.push(0.0)
+                    }
+                }
+                activation.push(re_lu)
+            }
+            return ActivationReLu { output: activation };
         }
     }
 }
