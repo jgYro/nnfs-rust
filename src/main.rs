@@ -1,6 +1,6 @@
-// use serde::{Deserialize, Serialize};
-// use serde_json;
-// use std::fs;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::fs;
 fn main() {
     // Pg. 26
     // println!(
@@ -148,19 +148,23 @@ fn main() {
     // println!("This is the ReLu function: {:?}", rel);
 
     // Pg.96
-    // #[derive(Serialize, Deserialize, Debug)]
-    // struct NNFS {
-    //     data: Vec<Vec<f32>>,
-    // }
+    #[derive(Serialize, Deserialize, Debug)]
+    struct NNFS {
+        data: Vec<Vec<f32>>,
+    }
 
-    // let path = "./nnfs_data.json";
-    // let data = fs::read_to_string(path).expect("Unable to read file");
-    // let dataset: NNFS = serde_json::from_str(&data).unwrap();
+    let path = "./nnfs_data.json";
+    let data = fs::read_to_string(path).expect("Unable to read file");
+    let dataset: NNFS = serde_json::from_str(&data).unwrap();
 
-    // let pre_act = DenseLayer::new(2, 3);
+    let pre_act = DenseLayer::new(2, 3);
 
-    // let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
+    let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
     // println!("Here is the output: {:#?}", activation1);
+    // println!(
+    //     "This is the softmax function on the output: {:#?}",
+    //     activation1
+    // );
 
     // Pg.101
     // let layer_outputs = vec![
@@ -170,6 +174,14 @@ fn main() {
     // ];
 
     // softmax(layer_outputs);
+
+    //Pg.110, End of chapter 4
+    let dense2 = DenseLayer::new(3, 3);
+
+    println!(
+        "This is the softmax output of the second dense layer: {:#?}",
+        softmax(dense2.forward(activation1.output))
+    );
 
     // *************************************************
     // *************************************************
@@ -271,14 +283,14 @@ fn main() {
     // Pg. 38
     // TODO: Handling 2D vector and return vector of dot products like on pg.42
     // TODO: Make a fancy one-liner
-    // fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
-    //     let mut sum: f32 = 0.0;
-    //     for (i, j) in std::iter::zip(v1, v2) {
-    //         sum += i * j;
-    //     }
+    fn dot_product(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
+        let mut sum: f32 = 0.0;
+        for (i, j) in std::iter::zip(v1, v2) {
+            sum += i * j;
+        }
 
-    //     sum
-    // }
+        sum
+    }
 
     // Pg. 40
     // fn neuron_with_dot_product() -> f32 {
@@ -314,21 +326,21 @@ fn main() {
 
     // Pg. 47
     // TODO: Make a fancy one-liner
-    // fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    //     let mut matrix: Vec<Vec<f32>> = Vec::new();
-    //     for i in 0..m1.len() {
-    //         let mut temp: Vec<f32> = Vec::new();
-    //         for j in 0..m2[0].len() {
-    //             let mut sum = 0.0;
-    //             for k in 0..m1[0].len() {
-    //                 sum += m1[i][k] * m2[k][j];
-    //             }
-    //             temp.push(sum)
-    //         }
-    //         matrix.push(temp)
-    //     }
-    //     matrix
-    // }
+    fn matrix_product(m1: Vec<Vec<f32>>, m2: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+        let mut matrix: Vec<Vec<f32>> = Vec::new();
+        for i in 0..m1.len() {
+            let mut temp: Vec<f32> = Vec::new();
+            for j in 0..m2[0].len() {
+                let mut sum = 0.0;
+                for k in 0..m1[0].len() {
+                    sum += m1[i][k] * m2[k][j];
+                }
+                temp.push(sum)
+            }
+            matrix.push(temp)
+        }
+        matrix
+    }
 
     // // Pg. 50
     // fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
@@ -344,18 +356,18 @@ fn main() {
     // }
 
     // // Pg. 57
-    // fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
-    //     let mut matrix: Vec<Vec<f32>> = Vec::new();
+    fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
+        let mut matrix: Vec<Vec<f32>> = Vec::new();
 
-    //     for i in 0..m1.len() {
-    //         let mut temp: Vec<f32> = Vec::new();
-    //         for j in 0..v1.len() {
-    //             temp.push(m1[i][j] + v1[j])
-    //         }
-    //         matrix.push(temp)
-    //     }
-    //     matrix
-    // }
+        for i in 0..m1.len() {
+            let mut temp: Vec<f32> = Vec::new();
+            for j in 0..v1.len() {
+                temp.push(m1[i][j] + v1[j])
+            }
+            matrix.push(temp)
+        }
+        matrix
+    }
 
     // Pg. 58
     // fn neuron_with_functions() -> Vec<Vec<f32>> {
@@ -410,131 +422,127 @@ fn main() {
     // }
 
     // Pg. 67
-    //fn create_distribution(size: usize) -> Vec<f32> {
-    //    let mut rng = rand::thread_rng();
+    fn create_distribution(size: usize) -> Vec<f32> {
+        let mut rng = rand::thread_rng();
 
-    //    let v: Vec<f32> = rand::distributions::Distribution::sample_iter(
-    //        &rand::distributions::Standard,
-    //        &mut rng,
-    //    )
-    //    .take(size)
-    //    .collect();
+        let v: Vec<f32> = rand::distributions::Distribution::sample_iter(
+            &rand::distributions::Standard,
+            &mut rng,
+        )
+        .take(size)
+        .collect();
 
-    //    let mut distribution: Vec<f32> = Vec::new();
+        let mut distribution: Vec<f32> = Vec::new();
 
-    //    for number in v {
-    //        let rando: u8 = rand::Rng::gen(&mut rng);
+        for number in v {
+            let rando: u8 = rand::Rng::gen(&mut rng);
 
-    //        let result = if let 0 = rando % 2 {
-    //            number
-    //        } else {
-    //            number * -1.0
-    //        };
-    //        distribution.push(result);
-    //    }
+            let result = if let 0 = rando % 2 {
+                number
+            } else {
+                number * -1.0
+            };
+            distribution.push(result);
+        }
 
-    //    distribution
-    //}
+        distribution
+    }
 
-    //fn create_weights(inputs: usize, neurons: usize) -> Vec<Vec<f32>> {
-    //    let mut weights = Vec::new();
-    //    for _ in 0..inputs {
-    //        weights.push(create_distribution(neurons))
-    //    }
+    fn create_weights(inputs: usize, neurons: usize) -> Vec<Vec<f32>> {
+        let mut weights = Vec::new();
+        for _ in 0..inputs {
+            weights.push(create_distribution(neurons))
+        }
 
-    //    weights
-    //}
+        weights
+    }
 
-    //fn create_biases(neurons: usize) -> Vec<f32> {
-    //    let mut biases = Vec::new();
+    fn create_biases(neurons: usize) -> Vec<f32> {
+        let mut biases = Vec::new();
 
-    //    for _ in 0..neurons {
-    //        biases.push(0.0);
-    //    }
-    //    biases
-    //}
+        for _ in 0..neurons {
+            biases.push(0.0);
+        }
+        biases
+    }
 
-    //#[derive(Debug)]
-    //struct DenseLayer {
-    //    weights: Vec<Vec<f32>>,
-    //    biases: Vec<f32>,
-    //}
+    #[derive(Debug)]
+    struct DenseLayer {
+        weights: Vec<Vec<f32>>,
+        biases: Vec<f32>,
+    }
 
     ////Pg. 69
     ////This has produced the same output as two earlier examples
-    //impl DenseLayer {
-    //    fn new(inputs: usize, neurons: usize) -> Self {
-    //        return DenseLayer {
-    //            weights: create_weights(inputs, neurons),
-    //            biases: create_biases(neurons),
-    //        };
-    //    }
-    //}
+    impl DenseLayer {
+        fn new(inputs: usize, neurons: usize) -> Self {
+            return DenseLayer {
+                weights: create_weights(inputs, neurons),
+                biases: create_biases(neurons),
+            };
+        }
+    }
 
-    //impl DenseLayer {
-    //    fn forward(&self, inputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    //        vector_addition(
-    //            matrix_product(inputs.to_vec(), self.weights.to_vec()),
-    //            self.biases.to_vec(),
-    //        )
-    //    }
-    //}
+    impl DenseLayer {
+        fn forward(&self, inputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+            vector_addition(
+                matrix_product(inputs.to_vec(), self.weights.to_vec()),
+                self.biases.to_vec(),
+            )
+        }
+    }
 
     ////Pg. 95
-    //#[derive(Debug)]
-    //struct ActivationReLu {
-    //    output: Vec<Vec<f32>>,
-    //}
+    #[derive(Debug)]
+    struct ActivationReLu {
+        output: Vec<Vec<f32>>,
+    }
 
-    //impl ActivationReLu {
-    //    fn new(inputs: Vec<Vec<f32>>) -> Self {
-    //        let mut activation: Vec<Vec<f32>> = Vec::new();
+    impl ActivationReLu {
+        fn new(inputs: Vec<Vec<f32>>) -> Self {
+            let mut activation: Vec<Vec<f32>> = Vec::new();
 
-    //        for vector in inputs {
-    //            let mut re_lu: Vec<f32> = Vec::new();
-    //            for float in vector {
-    //                if float > 0.0 {
-    //                    re_lu.push(float)
-    //                } else {
-    //                    re_lu.push(0.0)
-    //                }
-    //            }
-    //            activation.push(re_lu)
-    //        }
-    //        return ActivationReLu { output: activation };
-    //    }
-    //}
+            for vector in inputs {
+                let mut re_lu: Vec<f32> = Vec::new();
+                for float in vector {
+                    if float > 0.0 {
+                        re_lu.push(float)
+                    } else {
+                        re_lu.push(0.0)
+                    }
+                }
+                activation.push(re_lu)
+            }
+            return ActivationReLu { output: activation };
+        }
+    }
+
     //Pg. 101
-    // fn softmax(outputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    //     let mut normalize_outputs = Vec::new();
-    //     for row in outputs {
-    //         let e = 2.71828182846;
+    fn softmax(outputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+        let mut normalize_outputs = Vec::new();
+        for row in outputs {
+            let e = 2.71828182846;
 
-    //         let mut exp_values = Vec::new();
+            let mut exp_values = Vec::new();
 
-    //         for output in row {
-    //             exp_values.push(f32::powf(e, output));
-    //         }
+            for output in row {
+                exp_values.push(f32::powf(e, output));
+            }
 
-    //         let mut norm_base = 0.0;
+            let mut norm_base = 0.0;
 
-    //         for val in &exp_values {
-    //             norm_base += val
-    //         }
+            for val in &exp_values {
+                norm_base += val
+            }
 
-    //         let mut norm_values = Vec::new();
+            let mut norm_values = Vec::new();
 
-    //         for val in exp_values {
-    //             println!(
-    //                 "This is the val: {:?}, and this is the base: {:?}",
-    //                 val, norm_base
-    //             );
-    //             norm_values.push(val / norm_base)
-    //         }
+            for val in exp_values {
+                norm_values.push(val / norm_base)
+            }
 
-    //         normalize_outputs.push(norm_values)
-    //     }
-    //     println!("THese are the normalized values: {:?}", normalize_outputs);
-    //     normalize_outputs
-    // }
+            normalize_outputs.push(norm_values)
+        }
+        normalize_outputs
+    }
 }
