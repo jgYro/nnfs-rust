@@ -1,11 +1,7 @@
-// use serde::{Deserialize, Serialize};
-// use serde_json;
-// use std::fs;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::fs;
 fn main() {
-    let rel = ActivationReLu::new(vec![[0.1, -0.3, 1.1, -3.4].to_vec()]);
-
-    println!("This is the ReLu function: {:?}", rel);
-
     // Pg. 26
     // println!(
     //     "This is the first example output: {:?}",
@@ -142,6 +138,35 @@ fn main() {
     // let pre_act = DenseLayer::new(2, 3);
 
     // println!("Here is the output: {:#?}", pre_act.forward(dataset.data));
+
+    //Pg.95
+    // let rel = ActivationReLu::new(vec![
+    //     [0.1, -1.1, 3.4, -3.2].to_vec(),
+    //     [-0.1, 1.1, -3.4, 3.2].to_vec(),
+    // ]);
+
+    // println!("This is the ReLu function: {:?}", rel);
+
+    // Pg.96
+    #[derive(Serialize, Deserialize, Debug)]
+    struct NNFS {
+        data: Vec<Vec<f32>>,
+    }
+
+    let path = "./nnfs_data.json";
+    let data = fs::read_to_string(path).expect("Unable to read file");
+    let dataset: NNFS = serde_json::from_str(&data).unwrap();
+
+    let pre_act = DenseLayer::new(2, 3);
+
+    let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
+    println!("Here is the output: {:#?}", activation1);
+
+    // *************************************************
+    // *************************************************
+    // Functions/Structs and whatever else below
+    // *************************************************
+    // *************************************************
 
     // ---------------------------------------------
     // Pg.26 Hard coding a neuron with 3 inputs and 3 weights
@@ -446,6 +471,7 @@ fn main() {
         }
     }
 
+    //Pg. 95
     #[derive(Debug)]
     struct ActivationReLu {
         output: Vec<Vec<f32>>,
