@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use serde_json;
-use std::fs;
+// use serde::{Deserialize, Serialize};
+// use serde_json;
+// use std::fs;
 fn main() {
     // Pg. 26
     // println!(
@@ -148,18 +148,18 @@ fn main() {
     // println!("This is the ReLu function: {:?}", rel);
 
     // Pg.96
-    #[derive(Serialize, Deserialize, Debug)]
-    struct NNFS {
-        data: Vec<Vec<f32>>,
-    }
+    // #[derive(Serialize, Deserialize, Debug)]
+    // struct NNFS {
+    //     data: Vec<Vec<f32>>,
+    // }
 
-    let path = "./nnfs_data.json";
-    let data = fs::read_to_string(path).expect("Unable to read file");
-    let dataset: NNFS = serde_json::from_str(&data).unwrap();
+    // let path = "./nnfs_data.json";
+    // let data = fs::read_to_string(path).expect("Unable to read file");
+    // let dataset: NNFS = serde_json::from_str(&data).unwrap();
 
-    let pre_act = DenseLayer::new(2, 3);
+    // let pre_act = DenseLayer::new(2, 3);
 
-    let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
+    // let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
     // println!("Here is the output: {:#?}", activation1);
     // println!(
     //     "This is the softmax function on the output: {:#?}",
@@ -176,12 +176,90 @@ fn main() {
     // softmax(layer_outputs);
 
     //Pg.110, End of chapter 4
-    let dense2 = DenseLayer::new(3, 3);
+    // let dense2 = DenseLayer::new(3, 3);
+
+    // println!(
+    //     "This is the softmax output of the second dense layer: {:#?}",
+    //     softmax(dense2.forward(activation1.output))
+    // );
+
+    //Pg.114
+    // let softmax_output = vec![0.7, 0.1, 0.2];
+
+    // let target_output = vec![1.0, 0.0, 0.0];
+
+    // Pg.114
+    // let loss = (f32::ln(softmax_output[0]) * target_output[0]
+    //     + f32::ln(softmax_output[1]) * target_output[1]
+    //     + f32::ln(softmax_output[2]) * target_output[2])
+    //     * -1.0;
+    //
+
+    // Pg.114
+    // let loss = (f32::ln(softmax_output[0])) * -1.0;
+    // println!("This is the output of cross-entropy loss: {:?}", loss);
+    let softmax_output = vec![
+        [0.7, 0.1, 0.2].to_vec(),
+        [0.1, 0.5, 0.4].to_vec(),
+        [0.02, 0.9, 0.08].to_vec(),
+    ];
+
+    let softmax_output_ = vec![
+        [0.7, 0.1, 0.2].to_vec(),
+        [0.1, 0.5, 0.4].to_vec(),
+        [0.02, 0.9, 0.08].to_vec(),
+    ];
+
+    // Testing one-d, categorical loss
+    let class_targets = vec![0.0, 1.0, 1.0];
+
+    // Testing two-d, one hot encoding loss
+    let class_targets_one_hot = vec![
+        [1.0, 0.0, 0.0].to_vec(),
+        [0.0, 1.0, 0.0].to_vec(),
+        [0.0, 1.0, 0.0].to_vec(),
+    ];
+    // println!("This was the average loss: {:?}", average_loss);
+
+    // println!(
+    //     "These are the predicted values: {:?}",
+    //     one_hot_loss(class_targets, softmax_output)
+    // );
+
+    let one_hot_loss = Loss::one_hot_loss(class_targets_one_hot, softmax_output);
+    let cat_loss = Loss::categorical_loss(class_targets, softmax_output_);
 
     println!(
-        "This is the softmax output of the second dense layer: {:#?}",
-        softmax(dense2.forward(activation1.output))
+        "This is the one hot loss output: {:?}, this is the categorical loss output: {:?}",
+        one_hot_loss.output, cat_loss.output
     );
+
+    // let average_loss = neg_loss / softmax_output.len() as f32;
+
+    // println!("This was the average loss: {:?}", average_loss);
+
+    // fn clip(list: Vec<f32>, lower_bound: f32, upper_bound: f32) -> Vec<f32> {
+    //     let mut clipped_vec = Vec::new();
+    //     for entry in list {
+    //         if entry <= lower_bound {
+    //             clipped_vec.push(0.000001);
+    //         } else if entry >= upper_bound {
+    //             clipped_vec.push(1.0 - 0.000001);
+    //         } else {
+    //             clipped_vec.push(entry);
+    //         }
+    //     }
+    //     clipped_vec
+    // }
+
+    // let test_vec = clip(vec![0.0, 1.0, 1.0], 0.0, 1.0);
+
+    // for entry in test_vec {
+    //     println!(
+    //         "This is the natural log of each entry: {:?}",
+    //         (f32::ln(entry) * -1.0)
+    //     )
+    // }
 
     // *************************************************
     // *************************************************
@@ -544,5 +622,37 @@ fn main() {
             normalize_outputs.push(norm_values)
         }
         normalize_outputs
+    }
+
+    struct Loss {
+        output: f32,
+    }
+
+    impl Loss {
+        // One dimensional array, for categorical labels
+        fn categorical_loss(targets: Vec<f32>, outputs: Vec<Vec<f32>>) -> Self {
+            let mut neg_loss = 0.0;
+            for (target_idx, distribution) in std::iter::zip(targets, &outputs) {
+                neg_loss += f32::ln(distribution[target_idx as usize]);
+            }
+            return Loss {
+                output: -neg_loss / outputs.len() as f32,
+            };
+        }
+
+        // Two dimensional array, for one hot encoded labels.
+        fn one_hot_loss(targets: Vec<Vec<f32>>, outputs: Vec<Vec<f32>>) -> Self {
+            let mut neg_loss = 0.0;
+            for (target_vec, output_vec) in std::iter::zip(&targets, &outputs) {
+                for (target, output) in std::iter::zip(target_vec, output_vec) {
+                    if (target * output) != 0.0 {
+                        neg_loss += f32::ln(target * output)
+                    }
+                }
+            }
+            return Loss {
+                output: -neg_loss / outputs.len() as f32,
+            };
+        }
     }
 }
