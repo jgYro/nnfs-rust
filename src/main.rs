@@ -153,13 +153,18 @@ fn main() {
         data: Vec<Vec<f32>>,
     }
 
+    #[derive(Serialize, Deserialize, Debug)]
+    struct NNFS_y {
+        data: Vec<f32>,
+    }
+
     let path = "./nnfs_data.json";
     let data = fs::read_to_string(path).expect("Unable to read file");
     let dataset: NNFS = serde_json::from_str(&data).unwrap();
 
-    // let y_path = "./nnfs_y_data.json";
-    // let y_data = fs::read_to_string(y_path).expect("Unable to read file");
-    // let y_dataset: NNFS = serde_json::from_str(&y_data).unwrap();
+    let y_path = "./nnfs_y_data.json";
+    let y_data = fs::read_to_string(y_path).expect("Unable to read file");
+    let y_dataset: NNFS_y = serde_json::from_str(&y_data).unwrap();
 
     let pre_act = DenseLayer::new(2, 3);
 
@@ -183,10 +188,15 @@ fn main() {
     let dense2 = DenseLayer::new(3, 3);
 
     let softmax = ActivationSoftmax::new(dense2.forward(activation1.output));
-    // println!(
-    //     "This is the softmax output of the second dense layer: {:#?}",
-    //     softmax.output
-    // );
+
+    println!(
+        "This is the softmax output of the second dense layer: {:#?}",
+        softmax.output
+    );
+
+    let loss = Loss::categorical_loss(y_dataset.data, softmax.output);
+
+    println!("This is the loss: {:?}", loss);
 
     //Pg.114
     // let softmax_output = vec![0.7, 0.1, 0.2];
@@ -234,10 +244,10 @@ fn main() {
     let one_hot_loss = Loss::one_hot_loss(class_targets_one_hot, softmax_output);
     let cat_loss = Loss::categorical_loss(class_targets, softmax_output_);
 
-    println!(
-        "This is the one hot loss output: {:?}, this is the categorical loss output: {:?}",
-        one_hot_loss.output, cat_loss.output
-    );
+    // println!(
+    //     "This is the one hot loss output: {:?}, this is the categorical loss output: {:?}",
+    //     one_hot_loss.output, cat_loss.output
+    // );
 
     // let average_loss = neg_loss / softmax_output.len() as f32;
 
