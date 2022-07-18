@@ -1,6 +1,6 @@
-// use serde::{Deserialize, Serialize};
-// use serde_json;
-// use std::fs;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::fs;
 fn main() {
     // Pg. 26
     // println!(
@@ -148,18 +148,22 @@ fn main() {
     // println!("This is the ReLu function: {:?}", rel);
 
     // Pg.96
-    // #[derive(Serialize, Deserialize, Debug)]
-    // struct NNFS {
-    //     data: Vec<Vec<f32>>,
-    // }
+    #[derive(Serialize, Deserialize, Debug)]
+    struct NNFS {
+        data: Vec<Vec<f32>>,
+    }
 
-    // let path = "./nnfs_data.json";
-    // let data = fs::read_to_string(path).expect("Unable to read file");
-    // let dataset: NNFS = serde_json::from_str(&data).unwrap();
+    let path = "./nnfs_data.json";
+    let data = fs::read_to_string(path).expect("Unable to read file");
+    let dataset: NNFS = serde_json::from_str(&data).unwrap();
 
-    // let pre_act = DenseLayer::new(2, 3);
+    // let y_path = "./nnfs_y_data.json";
+    // let y_data = fs::read_to_string(y_path).expect("Unable to read file");
+    // let y_dataset: NNFS = serde_json::from_str(&y_data).unwrap();
 
-    // let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
+    let pre_act = DenseLayer::new(2, 3);
+
+    let activation1 = ActivationReLu::new(pre_act.forward(dataset.data));
     // println!("Here is the output: {:#?}", activation1);
     // println!(
     //     "This is the softmax function on the output: {:#?}",
@@ -173,14 +177,15 @@ fn main() {
     //     [1.41, 1.051, 0.026].to_vec(),
     // ];
 
-    // softmax(layer_outputs);
+    // let softmax = ActivationSoftmax::new(layer_outputs);
 
     //Pg.110, End of chapter 4
-    // let dense2 = DenseLayer::new(3, 3);
+    let dense2 = DenseLayer::new(3, 3);
 
+    let softmax = ActivationSoftmax::new(dense2.forward(activation1.output));
     // println!(
     //     "This is the softmax output of the second dense layer: {:#?}",
-    //     softmax(dense2.forward(activation1.output))
+    //     softmax.output
     // );
 
     //Pg.114
@@ -595,35 +600,45 @@ fn main() {
         }
     }
 
-    //Pg. 101
-    fn softmax(outputs: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-        let mut normalize_outputs = Vec::new();
-        for row in outputs {
-            let e = 2.71828182846;
-
-            let mut exp_values = Vec::new();
-
-            for output in row {
-                exp_values.push(f32::powf(e, output));
-            }
-
-            let mut norm_base = 0.0;
-
-            for val in &exp_values {
-                norm_base += val
-            }
-
-            let mut norm_values = Vec::new();
-
-            for val in exp_values {
-                norm_values.push(val / norm_base)
-            }
-
-            normalize_outputs.push(norm_values)
-        }
-        normalize_outputs
+    #[derive(Debug)]
+    struct ActivationSoftmax {
+        output: Vec<Vec<f32>>,
     }
 
+    impl ActivationSoftmax {
+        //Pg. 101
+        fn new(outputs: Vec<Vec<f32>>) -> Self {
+            let mut normalize_outputs = Vec::new();
+            for row in outputs {
+                let e = 2.71828182846;
+
+                let mut exp_values = Vec::new();
+
+                for output in row {
+                    exp_values.push(f32::powf(e, output));
+                }
+
+                let mut norm_base = 0.0;
+
+                for val in &exp_values {
+                    norm_base += val
+                }
+
+                let mut norm_values = Vec::new();
+
+                for val in exp_values {
+                    norm_values.push(val / norm_base)
+                }
+
+                normalize_outputs.push(norm_values)
+            }
+            ActivationSoftmax {
+                output: normalize_outputs,
+            }
+        }
+    }
+
+    #[derive(Debug)]
     struct Loss {
         output: f32,
     }
