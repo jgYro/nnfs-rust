@@ -189,14 +189,19 @@ fn main() {
 
     let softmax = ActivationSoftmax::new(dense2.forward(activation1.output));
 
+    let predictions = softmax.output.clone();
+
+    // let loss = Loss::categorical_loss(y_dataset.data, softmax.output);
+
+    // println!("This is the loss: {:?}", loss);
+
+    // println!("This is the dataset: {:?}", y_dataset.data);
+    // let accuracy = single_mean(equal_mean(argmax(&predictions, 1), y_dataset.data));
+
     println!(
-        "This is the softmax output of the second dense layer: {:#?}",
-        softmax.output
+        "This is the accuracy: {:?}",
+        accuracy(argmax(&predictions, 1), y_dataset.data)
     );
-
-    let loss = Loss::categorical_loss(y_dataset.data, softmax.output);
-
-    println!("This is the loss: {:?}", loss);
 
     //Pg.114
     // let softmax_output = vec![0.7, 0.1, 0.2];
@@ -436,17 +441,17 @@ fn main() {
     }
 
     // // Pg. 50
-    // fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
-    //     let mut matrix: Vec<Vec<f32>> = Vec::new();
-    //     for i in 0..m1[0].len() {
-    //         let mut temp: Vec<f32> = Vec::new();
-    //         for j in &m1 {
-    //             temp.push(j[i])
-    //         }
-    //         matrix.push(temp);
-    //     }
-    //     matrix
-    // }
+    fn matrix_transpose(m1: Vec<Vec<f32>>) -> Vec<Vec<f32>> {
+        let mut matrix: Vec<Vec<f32>> = Vec::new();
+        for i in 0..m1[0].len() {
+            let mut temp: Vec<f32> = Vec::new();
+            for j in &m1 {
+                temp.push(j[i])
+            }
+            matrix.push(temp);
+        }
+        matrix
+    }
 
     // // Pg. 57
     fn vector_addition(m1: Vec<Vec<f32>>, v1: Vec<f32>) -> Vec<Vec<f32>> {
@@ -680,4 +685,91 @@ fn main() {
             };
         }
     }
+
+    // TODO: add min functionality
+    fn argmax(input: &Vec<Vec<f32>>, axis: usize) -> Vec<f32> {
+        let mut maxes: Vec<f32> = Vec::new();
+        let mut output: Vec<f32> = Vec::new();
+        let data: Vec<Vec<f32>> = if axis < 1 {
+            matrix_transpose(input.to_vec())
+        } else {
+            input.to_vec()
+        };
+
+        // Column
+        for row in &data {
+            let mut max: (usize, f32) = (0, 0.0);
+            for (i, r) in row.into_iter().enumerate() {
+                if r > &max.1 {
+                    max.0 = i;
+                    max.1 = *r
+                }
+            }
+            maxes.push(max.1)
+        }
+        for (m, v) in std::iter::zip(maxes, data) {
+            output.push(v.iter().position(|&x| x == m).unwrap() as f32)
+        }
+        output
+    }
+    // TODO: add mean and flat mean as one function, with optional parameters
+    fn mean(m1: Vec<Vec<f32>>, axis: usize) -> Vec<f32> {
+        let mut output: Vec<f32> = Vec::new();
+
+        let data: Vec<Vec<f32>> = if axis < 1 {
+            matrix_transpose(m1.to_vec())
+        } else {
+            m1.to_vec()
+        };
+        // Column
+        for row in &data {
+            let mut temp: f32 = 0.0;
+            for r in row {
+                temp += r;
+            }
+            output.push(temp / row.len() as f32)
+        }
+        output
+    }
+    fn flat_mean(m1: Vec<Vec<f32>>) -> Vec<f32> {
+        let mut output: Vec<f32> = Vec::new();
+
+        let mut count: usize = 0;
+        let mut temp: f32 = 0.0;
+        for row in m1 {
+            for r in row {
+                temp += r;
+                count += 1;
+            }
+        }
+        output.push(temp / count as f32);
+        output
+    }
+}
+
+fn equal_mean(v1: Vec<f32>, v2: Vec<f32>) -> Vec<f32> {
+    let mut output: Vec<f32> = Vec::new();
+    for (i, j) in std::iter::zip(v1, v2) {
+        if i == j {
+            output.push(1.0)
+        } else {
+            output.push(0.0)
+        }
+    }
+    output
+}
+
+fn single_mean(v1: Vec<f32>) -> f32 {
+    let mut count: usize = 0;
+    let mut temp: f32 = 0.0;
+    for v in v1 {
+        temp += v;
+        count += 1;
+    }
+
+    return temp / count as f32;
+}
+
+fn accuracy(v1: Vec<f32>, v2: Vec<f32>) -> f32 {
+    return single_mean(equal_mean(v1, v2));
 }
