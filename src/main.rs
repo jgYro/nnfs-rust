@@ -34,6 +34,14 @@ fn main() {
 
     println!(
         "This is the accuracy: {:?}",
-        neural::neural::accuracy(neural::neural::argmax(&predictions, 1), y_dataset.data)
+        neural::neural::accuracy(
+            neural::neural::argmax(&predictions, 1),
+            y_dataset.data.clone()
+        )
     );
+
+    println!(
+        "This is the loss: {:?}",
+        neural::neural::Loss::categorical_loss(y_dataset.data, predictions).output
+    )
 }
