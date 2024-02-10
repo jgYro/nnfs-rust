@@ -15,7 +15,7 @@ fn main() {
         data: Vec<f32>,
     }
 
-    let path = "./nnfs_data.json";
+    let path = "./nnfs_x_data.json";
     let data = fs::read_to_string(path).expect("Unable to read file");
     let dataset: NNFS = serde_json::from_str(&data).unwrap();
 
